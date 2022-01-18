@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>COVID-19 Detection</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+    <link href="../static/css/style.css" rel="stylesheet" />
+
+    <style>
+      .heading {
+        font-weight: 100;
+        font-size: 3.5em;
+        text-shadow: 1px 1px 5px black;
+      }
+      .xray {
+        height: 90%;
+        width: 100%;
+      }
+      .result {
+        font-size: 32px;
+        font-style: italic;
+      }
+      .container {
+        position: relative;
+        text-align: center;
+      }
+      ul {
+        text-align: left;
+        list-style-position: inside;
+      }
+    </style>
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-light"
+      style="background-color: #e3f2fd"
+    >
+      <a class="navbar-brand" href="/">COVID-19 Detector</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/"
+              >Home <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-expanded="false"
+            >
+              About
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/covid-19">COVID-19</a>
+              <a class="dropdown-item" href="/model">Model Used</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="heading">COVID-19</h1>
+          <p class="top">SARS-CoV-2</p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="imgAbt">
+            <img
+              width="80%"
+              src="data:image/jpeg;base64,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"
+            />
+          </div>
+        </div>
+        <div class="col-md-8">
+          <br />
+          <p>
+            COVID-19 (coronavirus disease 2019) is a disease caused by a virus
+            named SARS-CoV-2 and was discovered in December 2019 in Wuhan,
+            China. It is very contagious and has quickly spread around the
+            world. COVID-19 most often causes respiratory symptoms that can feel
+            much like a cold, a flu, or pneumonia. COVID-19 may attack more than
+            your lungs and respiratory system. Other parts of your body may also
+            be affected by the disease.
+          </p>
+        </div>
+      </div>
+      <div style="margin-top: 8%">
+        <h1>About SARS-CoV-2, the virus that causes COVID-19</h1>
+        COVID-19 is caused by a virus called SARS-CoV-2. It is part of the
+        coronavirus family, which include common viruses that cause a variety of
+        diseases from head or chest colds to more severe (but more rare)
+        diseases like severe acute respiratory syndrome (SARS) and Middle East
+        respiratory syndrome (MERS). Like many other respiratory viruses,
+        coronaviruses spread quickly through droplets that you project out of
+        your mouth or nose when you breathe, cough, sneeze, or speak. The word
+        corona means crown and refers to the appearance that coronaviruses get
+        from the spike proteins sticking out of them. These spike proteins are
+        important to the biology of this virus. The spike protein is the part of
+        the virus that attaches to a human cell to infect it, allowing it to
+        replicate inside of the cell and spread to other cells. Some antibodies
+        can protect you from SARS-CoV-2 by targeting these spike proteins.
+        Because of the importance of this specific part of the virus, scientists
+        who sequence the virus for research constantly monitor mutations causing
+        changes to the spike protein through a process called genomic
+        surveillance. As genetic changes to the virus happen over time, the
+        SARS-CoV-2 virus begins to form genetic lineages. Just as a family has a
+        family tree, the SARS-CoV-2 virus can be similarly mapped out. Sometimes
+        branches of that tree have different attributes that change how fast the
+        virus spreads, or the severity of illness it causes, or the
+        effectiveness of treatments against it. Scientists call the viruses with
+        these changes “variants”. They are still SARS-CoV-2, but may act
+        differently.
+      </div>
+      <div style="margin-top: 8%">
+        <h1>COVID-19 symptoms</h1>
+        <ul>
+          <li>fever</li>
+          <li>cough</li>
+          <li>tiredness</li>
+          <li>loss of taste or smell</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
