@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, redirect, request
 import numpy as np
-from keras.preprocessing import image
+import keras.utils as image
 from keras.models import load_model
 
 app = Flask(__name__)
